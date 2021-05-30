@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package RoboSMSPrj;
+import com.robo.sms.model.CordinatePoints;
 import com.robo.sms.model.ScullModelElliptical;
 import com.robo.sms.ui.mainUI;
 /**
@@ -38,12 +39,7 @@ public class Main {
         }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ScullModelElliptical model = new ScullModelElliptical();
-                model.NashionToInion = 36D; //cms
-                model.TragusToTragus = 32D; //cms
-                
-                model.positionX = 100;
-                model.positionY = 100;
+                ScullModelElliptical model = new ScullModelElliptical(new CordinatePoints(0,0),32D,38D);
                 mainUI ui = new mainUI(model);
                 ui.setVisible(true);
             }
