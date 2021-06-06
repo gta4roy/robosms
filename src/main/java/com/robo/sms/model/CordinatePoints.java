@@ -13,6 +13,12 @@ import java.awt.Point;
  */
 public class CordinatePoints {
     
+    
+    public CordinatePoints(int x, int y , String name){
+        this(x,y);
+        this.cordinateName = name;
+    }
+    
     public CordinatePoints(int x , int y){
        cartesianCordinates.x = x;
        cartesianCordinates.y = y;
@@ -28,6 +34,10 @@ public class CordinatePoints {
        
        screenCordinates.x = cartesianCordinates.x + (int)(widthOfTheScreen/2);
        screenCordinates.y = (int)(heightOfTheScreen/2) - cartesianCordinates.y;
+    }
+    
+    public String getCordinateName(){
+        return this.cordinateName;
     }
 
     public Point getScreenCordinates() {
@@ -54,6 +64,11 @@ public class CordinatePoints {
         screenCordinates.y = (int)(heightOfTheScreen/2) + cartesianCordinates.y;
     }
     
+    public void setCordinateName(String cordinateName){
+        this.cordinateName = cordinateName;
+    }
+    
+    private String cordinateName ="";
     
     private Point screenCordinates = new Point(0,0);
     private Point cartesianCordinates = new Point(0,0);
