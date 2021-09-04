@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package RoboSMSPrj;
+import com.robo.sms.calculator.EllipticalIntegral;
 import com.robo.sms.model.CordinatePoints;
 import com.robo.sms.model.ScullModelElliptical;
 import com.robo.sms.ui.mainUI;
@@ -19,8 +20,15 @@ public class Main {
         // TODO code application logic here
         System.out.println("ROBO SMS Skull Measurement System");
            /* Create and display the form */
-
-       
+        
+        double b = 2.23;
+        double a = 3.05;
+        double angle = Math.toRadians(50);
+        System.out.println("Arc Length : --- ");
+        
+        double arcLength = EllipticalIntegral.GetArcLengthOfEllipse(a, b, angle);
+        System.out.println("Arc Length : --- "+ arcLength);
+        
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -39,9 +47,9 @@ public class Main {
         }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ScullModelElliptical model = new ScullModelElliptical(new CordinatePoints(0,0),36D,38D);
-                mainUI ui = new mainUI(model);
-                ui.setVisible(true);
+               // ScullModelElliptical model = new ScullModelElliptical(new CordinatePoints(0,0),36D,38D);
+               // mainUI ui = new mainUI(model);
+               // ui.setVisible(true);
             }
         });
     }

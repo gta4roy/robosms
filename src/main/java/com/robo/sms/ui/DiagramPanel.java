@@ -9,6 +9,7 @@ import com.robo.sms.calculator.CordinateDetailCalculator;
 import com.robo.sms.calculator.CordinateListController;
 import com.robo.sms.model.CordinatePoints;
 import com.robo.sms.model.ScullModelElliptical;
+import com.robo.sms.model.ScullPointReference;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -35,14 +36,14 @@ public class DiagramPanel extends JPanel {
         this.setToolTipText("");
         this.cordinateList = new CordinateListController();
         this.innerCircleCordinateMaps =new HashMap<Double,String>();
-        innerCircleCordinateMaps.put(36.0D, "F8");
-        innerCircleCordinateMaps.put(72.0D, "Fp2");
-        innerCircleCordinateMaps.put(108.0D, "Fp1");
-        innerCircleCordinateMaps.put(144.0D, "F7");
-        innerCircleCordinateMaps.put(216.0D, "T5");
-        innerCircleCordinateMaps.put(252.0D, "O1");
-        innerCircleCordinateMaps.put(288.0D, "O2");
-        innerCircleCordinateMaps.put(324.0D, "T6");
+        innerCircleCordinateMaps.put(36.0D, ScullPointReference.F8_POINT);
+        innerCircleCordinateMaps.put(72.0D, ScullPointReference.Fp2_POINT);
+        innerCircleCordinateMaps.put(108.0D, ScullPointReference.Fp1_POINT);
+        innerCircleCordinateMaps.put(144.0D, ScullPointReference.F7_POINT);
+        innerCircleCordinateMaps.put(216.0D, ScullPointReference.T5_POINT);
+        innerCircleCordinateMaps.put(252.0D, ScullPointReference.O1_POINT);
+        innerCircleCordinateMaps.put(288.0D, ScullPointReference.O2_POINT);
+        innerCircleCordinateMaps.put(324.0D, ScullPointReference.T6_POINT);
     }
     
      // paint the applet
@@ -51,7 +52,7 @@ public class DiagramPanel extends JPanel {
         int nashionPointX =  this.model.getCartesianCenter().getCartesianCordinates().x;
         int nashionPointY = this.model.getCartesianCenter().getCartesianCordinates().y +
                                  (int)(this.model.getHeight()/2);
-        CordinatePoints na = new CordinatePoints(nashionPointX, nashionPointY,"Nz");
+        CordinatePoints na = new CordinatePoints(nashionPointX, nashionPointY,ScullPointReference.NZ_POINT);
         return na;
     }
     
@@ -59,7 +60,7 @@ public class DiagramPanel extends JPanel {
        int nashionPointX =  this.model.getCartesianCenter().getCartesianCordinates().x;
         int nashionPointY = this.model.getCartesianCenter().getCartesianCordinates().y -
                                  (int)(this.model.getHeight()/2);
-        CordinatePoints na = new CordinatePoints(nashionPointX, nashionPointY,"Iz");
+        CordinatePoints na = new CordinatePoints(nashionPointX, nashionPointY,ScullPointReference.IZ_POINT);
         return na;
     }
     
@@ -74,7 +75,7 @@ public class DiagramPanel extends JPanel {
        int lTrPointX =  this.model.getCartesianCenter().getCartesianCordinates().x - (int)(this.model.getWidth()/2.0D);
        int ltrPointY = this.model.getCartesianCenter().getCartesianCordinates().y ;
                               
-        CordinatePoints na = new CordinatePoints(lTrPointX, ltrPointY,"T1");
+        CordinatePoints na = new CordinatePoints(lTrPointX, ltrPointY,ScullPointReference.T1_POINT);
         return na;
     }
     
@@ -82,17 +83,17 @@ public class DiagramPanel extends JPanel {
         int lTrPointX =  this.model.getCartesianCenter().getCartesianCordinates().x + (int)(this.model.getWidth()/2.0D);
         int ltrPointY = this.model.getCartesianCenter().getCartesianCordinates().y ;
                               
-        CordinatePoints na = new CordinatePoints(lTrPointX, ltrPointY,"T2");
+        CordinatePoints na = new CordinatePoints(lTrPointX, ltrPointY, ScullPointReference.T2_POINT);
         return na;
     }
     
     private CordinatePoints getFPzPoint(double gapDistance, CordinatePoints nasionPoint){
-        CordinatePoints nm = new CordinatePoints (nasionPoint.getCartesianCordinates().x, nasionPoint.getCartesianCordinates().y - (int)gapDistance,"Fpz");
+        CordinatePoints nm = new CordinatePoints (nasionPoint.getCartesianCordinates().x, nasionPoint.getCartesianCordinates().y - (int)gapDistance,ScullPointReference.Fpz_POINT);
         return nm;
     }
     
     private CordinatePoints getOzPoint(double gapDistance, CordinatePoints inionPoint){
-        CordinatePoints nm = new CordinatePoints (inionPoint.getCartesianCordinates().x, inionPoint.getCartesianCordinates().y + (int)gapDistance,"Oz");
+        CordinatePoints nm = new CordinatePoints (inionPoint.getCartesianCordinates().x, inionPoint.getCartesianCordinates().y + (int)gapDistance,ScullPointReference.OZ_POINT);
         return nm;
     }
     
@@ -108,32 +109,32 @@ public class DiagramPanel extends JPanel {
     
     
     private CordinatePoints getFzPoint(double gapDistance, CordinatePoints vertex){
-        CordinatePoints nm = new CordinatePoints(vertex.getCartesianCordinates().x,vertex.getCartesianCordinates().y + (int)gapDistance,"Fz");
+        CordinatePoints nm = new CordinatePoints(vertex.getCartesianCordinates().x,vertex.getCartesianCordinates().y + (int)gapDistance,ScullPointReference.FZ_POINT);
         return nm;
     }
     
     private CordinatePoints getPzPoint (double gapDistance, CordinatePoints vertex ){
-        CordinatePoints nm = new CordinatePoints(vertex.getCartesianCordinates().x, vertex.getCartesianCordinates().y - (int)gapDistance,"Pz");
+        CordinatePoints nm = new CordinatePoints(vertex.getCartesianCordinates().x, vertex.getCartesianCordinates().y - (int)gapDistance,ScullPointReference.PZ_POINT);
         return nm;
     }
     
     private CordinatePoints getT3Point(double gapDistance, CordinatePoints leftTragusPoint){
-        CordinatePoints nm = new CordinatePoints (leftTragusPoint.getCartesianCordinates().x + (int)gapDistance , leftTragusPoint.getCartesianCordinates().y,"T3");
+        CordinatePoints nm = new CordinatePoints (leftTragusPoint.getCartesianCordinates().x + (int)gapDistance , leftTragusPoint.getCartesianCordinates().y,ScullPointReference.T3_POINT);
         return nm;
     }
     
     private CordinatePoints getT4Point (double gapDistance ,CordinatePoints rightTragusPoint){
-        CordinatePoints nm = new CordinatePoints (rightTragusPoint.getCartesianCordinates().x - (int)gapDistance , rightTragusPoint.getCartesianCordinates().y,"T4");
+        CordinatePoints nm = new CordinatePoints (rightTragusPoint.getCartesianCordinates().x - (int)gapDistance , rightTragusPoint.getCartesianCordinates().y,ScullPointReference.T4_POINT);
         return nm;
     }
     
     private CordinatePoints getC3Point (double gap, CordinatePoints czPoint){
-        CordinatePoints nm = new CordinatePoints (czPoint.getCartesianCordinates().x - (int)gap , czPoint.getCartesianCordinates().y,"C3");
+        CordinatePoints nm = new CordinatePoints (czPoint.getCartesianCordinates().x - (int)gap , czPoint.getCartesianCordinates().y,ScullPointReference.C3_POINT);
         return nm;
     }
     
     private CordinatePoints getC4Point (double gap, CordinatePoints czPoint){
-        CordinatePoints nm = new CordinatePoints (czPoint.getCartesianCordinates().x + (int)gap , czPoint.getCartesianCordinates().y,"C4");
+        CordinatePoints nm = new CordinatePoints (czPoint.getCartesianCordinates().x + (int)gap , czPoint.getCartesianCordinates().y,ScullPointReference.C4_POINT);
         return nm;
     }
     
@@ -159,13 +160,13 @@ public class DiagramPanel extends JPanel {
         CordinatePoints nasionPoint = getNashionPoint();
         CordinatePoints inionPoint = getInionPoint();
         CordinatePoints czPoint = this.model.getCartesianCenter();
-        czPoint.setCordinateName("Cz");
+        czPoint.setCordinateName(ScullPointReference.CZ_POINT);
         
         cordinateList.addCordinate(nasionPoint);
         cordinateList.addCordinate(czPoint);
         cordinateList.addCordinate(inionPoint);
         
-        dtCalculator = new CordinateDetailCalculator(this.CF,czPoint,nasionPoint);
+        
         
         CordinatePoints leftTragusPoint = getLeftTragusPoint();
         CordinatePoints rightTragusPoint = getRightTragusPoint();
@@ -272,9 +273,9 @@ public class DiagramPanel extends JPanel {
               }  
         } 
         
-        CordinatePoints p1 = cordinateList.getCordinatePointByName("F7");
+        CordinatePoints p1 = cordinateList.getCordinatePointByName(ScullPointReference.F7_POINT);
         CordinatePoints p2 = fzPoint;
-        CordinatePoints p3 = cordinateList.getCordinatePointByName("F8");
+        CordinatePoints p3 = cordinateList.getCordinatePointByName(ScullPointReference.F8_POINT);
         
         QuadCurve2D.Double firstHalfCurve = getCurveLine(p1,p2,p3);
        //g1.draw(firstHalfCurve);
@@ -286,22 +287,22 @@ public class DiagramPanel extends JPanel {
         double yF4 = fzPoint.getCartesianCordinates().y + halfHeight;
         double xF4 = (p3.getCartesianCordinates().x - p2.getCartesianCordinates().x)/2;
         
-        CordinatePoints F4Point = new CordinatePoints((int)xF4,(int)yF4,"F4");
+        CordinatePoints F4Point = new CordinatePoints((int)xF4,(int)yF4,ScullPointReference.F4_POINT);
         cordinateList.addCordinate(F4Point);
         g1.drawString(F4Point.getCordinateName(), F4Point.getScreenCordinates().x,F4Point.getScreenCordinates().y);    
         
         double yF3 =  yF4;
         double xF3 = -xF4;
         
-        CordinatePoints F3Point = new CordinatePoints((int)xF3,(int)yF3,"F3");
+        CordinatePoints F3Point = new CordinatePoints((int)xF3,(int)yF3,ScullPointReference.F3_POINT);
         cordinateList.addCordinate(F3Point);
         g1.drawString(F3Point.getCordinateName(), F3Point.getScreenCordinates().x,F3Point.getScreenCordinates().y);  
 
         
         QuadCurve2D.Double secondHalfCurve = getCurveLine(
-                cordinateList.getCordinatePointByName("T5"),
-                cordinateList.getCordinatePointByName("Pz"),
-                cordinateList.getCordinatePointByName("T6"));
+                cordinateList.getCordinatePointByName(ScullPointReference.T5_POINT),
+                cordinateList.getCordinatePointByName(ScullPointReference.PZ_POINT),
+                cordinateList.getCordinatePointByName(ScullPointReference.T6_POINT));
        
        // g1.draw(secondHalfCurve);
         
@@ -310,18 +311,20 @@ public class DiagramPanel extends JPanel {
         halfLength = boundedRectSecondHalf.width /2;
         
         double yP4 = PzPoint.getCartesianCordinates().y - halfHeight;
-        double xP4 = (cordinateList.getCordinatePointByName("T6").getCartesianCordinates().x - cordinateList.getCordinatePointByName("Pz").getCartesianCordinates().x)/2;
+        double xP4 = (cordinateList.getCordinatePointByName(ScullPointReference.T6_POINT).getCartesianCordinates().x - cordinateList.getCordinatePointByName(ScullPointReference.PZ_POINT).getCartesianCordinates().x)/2;
         
-        CordinatePoints P4Point = new CordinatePoints((int)xP4,(int)yP4,"P4");
+        CordinatePoints P4Point = new CordinatePoints((int)xP4,(int)yP4,ScullPointReference.P4_POINT);
         cordinateList.addCordinate(P4Point);
         g1.drawString(P4Point.getCordinateName(), P4Point.getScreenCordinates().x,P4Point.getScreenCordinates().y); 
         
         double yP3 =  yP4;
         double xP3 = -xP4;
         
-        CordinatePoints P3Point = new CordinatePoints((int)xP3,(int)yP3,"P3");
+        CordinatePoints P3Point = new CordinatePoints((int)xP3,(int)yP3,ScullPointReference.P3_POINT);
         cordinateList.addCordinate(P3Point);
         g1.drawString(P3Point.getCordinateName(), P3Point.getScreenCordinates().x,P3Point.getScreenCordinates().y);  
+        
+        dtCalculator = new CordinateDetailCalculator(this.CF,czPoint,t4Point,fPzPoint,t3Point,ozPoint);
     }
     
     public QuadCurve2D.Double getCurveLine(CordinatePoints firstPoint, CordinatePoints middlePoint , CordinatePoints endPoint ){

@@ -14,9 +14,18 @@ import java.awt.geom.Line2D;
  */
 public class CordinateDetailCalculator {
 
-    public CordinateDetailCalculator(double CF,CordinatePoints centerVertex, CordinatePoints t4Point) {
+    public CordinateDetailCalculator(double CF,
+            CordinatePoints centerVertex,
+            CordinatePoints t4Point,
+            CordinatePoints fpzPoint,
+            CordinatePoints t3Point,
+            CordinatePoints ozPoint) {
+        
         this.centerVertex = centerVertex;
         this.t4Point = t4Point;
+        this.FpzPoint = fpzPoint;
+        this.T3Point = t3Point;
+        this.ozPoint = ozPoint;
         this.CF =CF;
     }
 
@@ -37,6 +46,7 @@ public class CordinateDetailCalculator {
         this.distanceInCM = getDistanceCms(centerVertex, refPoint);
         this.distanceInPixel = getDistancePixels(centerVertex,refPoint);
         this.angleFromXPositiveAxis = getAngleBetween2Lines();
+        this.arcLength = getArchLengthBetweenPointsOnTheCurve(refPoint) *this.CF;
     }
     
     public String getDetails(){
@@ -44,6 +54,7 @@ public class CordinateDetailCalculator {
         details.append(refPoint.getCordinateName()+" ");
         details.append(String.format("%.2f",this.distanceInCM)+"cm. ");
         details.append(String.format("%.2f",this.angleFromXPositiveAxis)+ " degree rot");
+        details.append(String.format("%.2f",this.arcLength)+ "pixel arc");
         return details.toString();
     }
     
@@ -57,9 +68,70 @@ public class CordinateDetailCalculator {
         return distance;
     }
     
+    /*
+    https://www.codeproject.com/Articles/566614/Elliptic-integrals
+    Abramowitz and Stegun p.591, formula 17.3.12
+    */
+    private double completeEllipticIntegralSecondKind(double k){
+        double sum , term , above , below;
+        sum = 1.0;
+        term = 1.0;
+        above = 1.0;
+        below = 2.0;
+        
+        for (int i = 1; i <100; i++){
+            term *= above/below;
+            sum -= Math.pow(k, i) * Math.pow(term, 2) /above ;
+            above +=2 ;
+            below +=2;
+        }
+        
+        
+        sum *= 0.5 * Math.PI;
+        return sum;
+    }
+    
+    
+    
+    private double getArchLengthBetweenPointsOnTheCurve(CordinatePoints referedPoint){
+        double factor = Math.PI / (2 * Math.sqrt(2.0));
+        
+        CordinatePoints marginPoint = getMarginPoint(referedPoint);
+        
+        double x1 = (double) marginPoint.getCartesianCordinates().x;
+        double x2 = (double) referedPoint.getCartesianCordinates().x;
+        
+        double y1 = (double) marginPoint.getCartesianCordinates().y;
+        double y2 = (double) referedPoint.getCartesianCordinates().y;
+        
+        double equationRes = Math.pow((x2 - x2), 2.0) + Math.pow((y2 - y1), 2.0);
+        double arcLen = factor * Math.sqrt(equationRes);
+        return arcLen;
+    }
+    
+    private CordinatePoints getMarginPoint(CordinatePoints refPoint){
+        CordinatePoints marginPoint = null;
+        if(refPoint.getCartesianCordinates().x >0 && refPoint.getCartesianCordinates().y >= 0){
+            //First Quadrant
+            marginPoint = this.t4Point;
+        }else if (refPoint.getCartesianCordinates().x <= 0 && refPoint.getCartesianCordinates().y > 0){
+            //second quadrant
+            marginPoint = this.FpzPoint;
+        }else if (refPoint.getCartesianCordinates().x < 0 && refPoint.getCartesianCordinates().y <= 0){
+            //third quadrant
+            marginPoint = this.T3Point;
+        }else if (refPoint.getCartesianCordinates().x >= 0 && refPoint.getCartesianCordinates().y < 0){
+            //fourth quadrant
+            marginPoint = this.ozPoint;
+        }
+        return marginPoint;
+    }
+    
     private double getAngleBetween2Lines(){
         
-        Line2D xAxisLine = new Line2D.Double(centerVertex.getScreenCordinates(),t4Point.getScreenCordinates());
+        CordinatePoints marginPoint = getMarginPoint(refPoint);
+        
+        Line2D xAxisLine = new Line2D.Double(centerVertex.getScreenCordinates(),marginPoint.getScreenCordinates());
         Line2D pointLine = new Line2D.Double(centerVertex.getScreenCordinates(),refPoint.getScreenCordinates());
         double angle1 = Math.atan2(xAxisLine.getY1() - xAxisLine.getY2(),
                                    xAxisLine.getX1() - xAxisLine.getX2());
@@ -75,7 +147,11 @@ public class CordinateDetailCalculator {
     private double distanceInPixel;
     private double distanceInCM ;
     private double angleFromXPositiveAxis;
+    private double arcLength;
     private CordinatePoints centerVertex;
     private CordinatePoints t4Point;
+    private CordinatePoints FpzPoint ;
+    private CordinatePoints T3Point;
+    private CordinatePoints ozPoint;
     private double CF;
 }
