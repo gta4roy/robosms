@@ -103,16 +103,15 @@ public class CordinateDetailCalculator {
         return sum;
     }
     
-    
-    
+ 
     private double getArchLengthBetweenPointsOnTheCurve(CordinatePoints referedPoint){
 
         CordinatePoints marginPoint = getMarginPoint(referedPoint);
-               
+        double angle = getAngleInRadianFromXAxis(referedPoint);     
         CordinatePoints r = convertFirstQuadrantCordinate(referedPoint);
         CordinatePoints m = this.t4Point;
 
-        double angle = getAngleInRadianFromXAxis(r);
+        //double angle = getAngleInRadianFromXAxis(r);
         System.out.println("------------Point X"+ referedPoint.getCartesianCordinates().x + "  Y "+ referedPoint.getCartesianCordinates().y);
         System.out.println("---ALEN : "+ this.aLen + "  BLen "+this.bLen);
         System.out.println("---ALEN : "+ this.aLen *this.CF + "  BLen "+this.bLen *this.CF);
@@ -227,26 +226,54 @@ public class CordinateDetailCalculator {
         return marginPoint;
     }
     
-    private double getAngleBetween2Lines(){
-        
-        CordinatePoints marginPoint = getMarginPoint(refPoint);
-        
+    private double calculateAngleFromXAxis(CordinatePoints refferedPoint){
+         CordinatePoints marginPoint = t4Point;
         Line2D xAxisLine = new Line2D.Double(centerVertex.getScreenCordinates(),marginPoint.getScreenCordinates());
-        Line2D pointLine = new Line2D.Double(centerVertex.getScreenCordinates(),refPoint.getScreenCordinates());
+        Line2D pointLine = new Line2D.Double(centerVertex.getScreenCordinates(),refferedPoint.getScreenCordinates());
         double angle1 = Math.atan2(xAxisLine.getY1() - xAxisLine.getY2(),
                                    xAxisLine.getX1() - xAxisLine.getX2());
         double angle2 = Math.atan2(pointLine.getY1() - pointLine.getY2(),
                                    pointLine.getX1() - pointLine.getX2());
         
         double angleInRadian = angle1 -angle2;
+        
+        if(refferedPoint.getCartesianCordinates().x >0 && refferedPoint.getCartesianCordinates().y >= 0){
+            //First Quadrant
+            
+        }else if (refferedPoint.getCartesianCordinates().x <= 0 && refferedPoint.getCartesianCordinates().y > 0){
+            //second quadrant
+            angleInRadian = Math.PI - angleInRadian;
+        }else if (refferedPoint.getCartesianCordinates().x < 0 && refferedPoint.getCartesianCordinates().y <= 0){
+            //third quadrant
+           angleInRadian =  angleInRadian - Math.PI; 
+        }else if (refferedPoint.getCartesianCordinates().x >= 0 && refferedPoint.getCartesianCordinates().y < 0){
+            //fourth quadrant
+            angleInRadian = (2.0d *Math.PI) - angleInRadian;
+        }
+        
+        return angleInRadian;
+    }
+    
+    private double getAngleBetween2Lines(){
+        
+        CordinatePoints marginPoint = t4Point;
+        Line2D xAxisLine = new Line2D.Double(centerVertex.getScreenCordinates(),marginPoint.getScreenCordinates());
+        Line2D pointLine = new Line2D.Double(centerVertex.getScreenCordinates(),this.refPoint.getScreenCordinates());
+        double angle1 = Math.atan2(xAxisLine.getY1() - xAxisLine.getY2(),
+                                   xAxisLine.getX1() - xAxisLine.getX2());
+        double angle2 = Math.atan2(pointLine.getY1() - pointLine.getY2(),
+                                   pointLine.getX1() - pointLine.getX2());
+        
+        double angleInRadian = angle1 -angle2;      
         return Math.toDegrees(angleInRadian);
     }
     
-    private double getAngleInRadianFromXAxis(CordinatePoints refPoints ){
-        CordinatePoints marginPoint = getMarginPoint(refPoints);
-        double aLen = this.aLen;
-        double X= refPoints.getCartesianCordinates().x;
-        double angleInRadian = Math.acos((X/aLen));
+    private double getAngleInRadianFromXAxis(CordinatePoints refferedPoint ){
+//        CordinatePoints marginPoint = getMarginPoint(refPoints);
+//        double aLen = this.aLen;
+//        double X= refPoints.getCartesianCordinates().x;
+//        double angleInRadian = Math.acos((X/aLen));
+        double angleInRadian = calculateAngleFromXAxis(refferedPoint);   
         return angleInRadian;
     }
     
