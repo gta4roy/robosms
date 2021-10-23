@@ -8,6 +8,13 @@ package com.robo.sms.calculator;
 import com.robo.sms.model.CordinatePoints;
 import java.awt.geom.Line2D;
 
+enum Quadrant {
+    FIRST,
+    SECOND,
+    THIRD,
+    FOURTH
+}
+
 /**
  *
  * @author Anushree_Bose
@@ -19,7 +26,9 @@ public class CordinateDetailCalculator {
             CordinatePoints t4Point,
             CordinatePoints fpzPoint,
             CordinatePoints t3Point,
-            CordinatePoints ozPoint) {
+            CordinatePoints ozPoint,
+            Double aLen ,
+            Double bLen) {
         
         this.centerVertex = centerVertex;
         this.t4Point = t4Point;
@@ -27,6 +36,8 @@ public class CordinateDetailCalculator {
         this.T3Point = t3Point;
         this.ozPoint = ozPoint;
         this.CF =CF;
+        this.aLen= aLen;
+        this.bLen = bLen;
     }
 
     public double getDistanceInPixel() {
@@ -46,15 +57,16 @@ public class CordinateDetailCalculator {
         this.distanceInCM = getDistanceCms(centerVertex, refPoint);
         this.distanceInPixel = getDistancePixels(centerVertex,refPoint);
         this.angleFromXPositiveAxis = getAngleBetween2Lines();
-        this.arcLength = getArchLengthBetweenPointsOnTheCurve(refPoint) *this.CF;
+        this.arcLength = getArchLengthBetweenPointsOnTheCurve(refPoint) * this.CF;
     }
     
     public String getDetails(){
         StringBuilder details = new StringBuilder();    
         details.append(refPoint.getCordinateName()+" ");
         details.append(String.format("%.2f",this.distanceInCM)+"cm. ");
-        details.append(String.format("%.2f",this.angleFromXPositiveAxis)+ " degree rot");
-        details.append(String.format("%.2f",this.arcLength)+ "pixel arc");
+        details.append(String.format("%.2f",this.angleFromXPositiveAxis)+ " degree rot ");
+        details.append(String.format("%.2f",this.arcLength)+ "  Arc Length from X Axis ");
+        details.append(" Cordinate "+ String.format(" X :%d  Y: %d",this.refPoint.getCartesianCordinates().x , this.refPoint.getCartesianCordinates().y));
         return details.toString();
     }
     
@@ -94,19 +106,107 @@ public class CordinateDetailCalculator {
     
     
     private double getArchLengthBetweenPointsOnTheCurve(CordinatePoints referedPoint){
-        double factor = Math.PI / (2 * Math.sqrt(2.0));
-        
+
         CordinatePoints marginPoint = getMarginPoint(referedPoint);
+               
+        CordinatePoints r = convertFirstQuadrantCordinate(referedPoint);
+        CordinatePoints m = this.t4Point;
+
+        double angle = getAngleInRadianFromXAxis(r);
+        System.out.println("------------Point X"+ referedPoint.getCartesianCordinates().x + "  Y "+ referedPoint.getCartesianCordinates().y);
+        System.out.println("---ALEN : "+ this.aLen + "  BLen "+this.bLen);
+        System.out.println("---ALEN : "+ this.aLen *this.CF + "  BLen "+this.bLen *this.CF);
+             
+        double aLen  = this.aLen;
+        double bLen = this.bLen;
+        System.out.println("   Angle in Degree :"+ Math.toDegrees(angle));
+        System.out.println("   Angle in Radian :"+ angle);
         
-        double x1 = (double) marginPoint.getCartesianCordinates().x;
-        double x2 = (double) referedPoint.getCartesianCordinates().x;
+        //calculating using Simpson Rule Complete Integral of Second Kind 
+        double lowerLimit = 0.0d; //0 radian degree
+        double higherLimit = angle ; // angle of the point 
         
-        double y1 = (double) marginPoint.getCartesianCordinates().y;
-        double y2 = (double) referedPoint.getCartesianCordinates().y;
+        double eccentricity = Math.sqrt( (1.0d - Math.pow((bLen/aLen), 2.0d))  );
+        System.out.println("   Eccentricity of the Ellips :"+ eccentricity);
         
-        double equationRes = Math.pow((x2 - x2), 2.0) + Math.pow((y2 - y1), 2.0);
-        double arcLen = factor * Math.sqrt(equationRes);
+        int simpsonN =6;  // 10 intervals 
+        double delta = (higherLimit - lowerLimit) / (double)simpsonN;
+        System.out.println("delta :"+delta);
+        double calculateValues = 0;
+        
+        double thetaValue = lowerLimit;
+        for(int i =0; i <=simpsonN ; i++){        
+            if (i ==0 || i == (simpsonN)){
+                calculateValues += getFunctionValue(eccentricity, thetaValue);
+            }else if ( i % 2 != 0){              
+                //odd 
+                calculateValues += (4.0d * getFunctionValue(eccentricity, thetaValue));
+                System.out.println("Factor: 4");
+            }else {
+                //even
+                calculateValues += (2.0d * getFunctionValue(eccentricity, thetaValue));
+                 System.out.println("Factor: 2");
+            }
+            
+            System.out.println(" Simpson Values  thetaValue :"+ thetaValue+ " Function Return :"+calculateValues);
+            thetaValue += delta;
+        }
+        
+        
+        double arcLen = aLen * ((delta /3.0d) * calculateValues);
+        
+        System.out.println("Calculated Arc Length :"+arcLen);
         return arcLen;
+    }
+    
+    private double getFunctionValue(double ecentricity,double angle){
+        double functionValue = 0.0d;
+        functionValue = Math.sqrt(( 1.0d - (Math.pow(ecentricity, 2.0d) * Math.pow(Math.sin(angle), 2.0d))));
+        return functionValue;
+    }
+    
+    private Quadrant getQuadrant(CordinatePoints refPoint){
+        
+        Quadrant calculatedQuadrant = Quadrant.FIRST;
+        if(refPoint.getCartesianCordinates().x >0 && refPoint.getCartesianCordinates().y >= 0){
+            //First Quadrant
+            calculatedQuadrant = Quadrant.FIRST;
+        }else if (refPoint.getCartesianCordinates().x <= 0 && refPoint.getCartesianCordinates().y > 0){
+            //second quadrant
+            calculatedQuadrant = Quadrant.SECOND;
+        }else if (refPoint.getCartesianCordinates().x < 0 && refPoint.getCartesianCordinates().y <= 0){
+            //third quadrant
+            calculatedQuadrant = Quadrant.THIRD;
+        }else if (refPoint.getCartesianCordinates().x >= 0 && refPoint.getCartesianCordinates().y < 0){
+            //fourth quadrant
+            calculatedQuadrant = Quadrant.FOURTH;
+        }
+        
+        return calculatedQuadrant;
+    }
+    
+    
+    private CordinatePoints convertFirstQuadrantCordinate(CordinatePoints refPoint){
+        
+        Quadrant calculatedQuadrant = getQuadrant(refPoint);
+        
+        CordinatePoints calculatedPoint = new CordinatePoints(0,0);
+        switch(calculatedQuadrant){
+            case FIRST:
+                calculatedPoint.setCartesianCordinates(refPoint.getCartesianCordinates().x, refPoint.getCartesianCordinates().y);
+                break ;
+            case SECOND:
+                 calculatedPoint.setCartesianCordinates((-1) * refPoint.getCartesianCordinates().x, refPoint.getCartesianCordinates().y);
+                break;
+            case THIRD:
+                 calculatedPoint.setCartesianCordinates((-1) *refPoint.getCartesianCordinates().x, (-1)* refPoint.getCartesianCordinates().y);
+                break;
+            case FOURTH:
+                 calculatedPoint.setCartesianCordinates(refPoint.getCartesianCordinates().x, (-1) *refPoint.getCartesianCordinates().y);
+            break;
+                
+        }
+        return calculatedPoint;
     }
     
     private CordinatePoints getMarginPoint(CordinatePoints refPoint){
@@ -142,12 +242,22 @@ public class CordinateDetailCalculator {
         return Math.toDegrees(angleInRadian);
     }
     
+    private double getAngleInRadianFromXAxis(CordinatePoints refPoints ){
+        CordinatePoints marginPoint = getMarginPoint(refPoints);
+        double aLen = this.aLen;
+        double X= refPoints.getCartesianCordinates().x;
+        double angleInRadian = Math.acos((X/aLen));
+        return angleInRadian;
+    }
+    
     private CordinatePoints refPoint;
     
     private double distanceInPixel;
     private double distanceInCM ;
     private double angleFromXPositiveAxis;
     private double arcLength;
+    private double aLen;
+    private double bLen;
     private CordinatePoints centerVertex;
     private CordinatePoints t4Point;
     private CordinatePoints FpzPoint ;

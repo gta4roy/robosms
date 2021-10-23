@@ -244,7 +244,7 @@ public class DiagramPanel extends JPanel {
         g1.drawString(c4Point.getCordinateName(), c4Point.getScreenCordinates().x,c4Point.getScreenCordinates().y); 
         
         double circum = model.getCircumferenceOfSkullEllipse();
-        System.out.println("Complete Circulference "+ circum + "px ");
+      //  System.out.println("Complete Circulference "+ circum + "px ");
         
         
         double a = getDistancePixels(czPoint,t4Point) /2 ;    //width
@@ -254,13 +254,13 @@ public class DiagramPanel extends JPanel {
         double bLenInnerCircle = getDistancePixels(czPoint,fPzPoint); //height
         double aLenInnerCircle = getDistancePixels(czPoint,t4Point); //width
         
-        System.out.println("ALen Inner Circle "+ aLenInnerCircle);
-        System.out.println("BLen Inner Circle "+ bLenInnerCircle);
+      //  System.out.println("ALen Inner Circle "+ aLenInnerCircle);
+      //  System.out.println("BLen Inner Circle "+ bLenInnerCircle);
         
          
         double innerCircleCircumference = getCircumferenceOfEllipse(aLenInnerCircle, bLenInnerCircle);
         double fivePrtOfCircum = 0.05 * innerCircleCircumference;
-        System.out.println("Inner Circumference: "+innerCircleCircumference+" 5 %C "+ fivePrtOfCircum + "px ");
+        System.out.println("Inner Circumference: "+(innerCircleCircumference *this.CF)+" cms.:  5 percent %C "+ (fivePrtOfCircum * this.CF) + "cms ");
         
         //288
         for (double angle = 0; angle <= 360.0 ; angle = angle + 36)
@@ -324,7 +324,8 @@ public class DiagramPanel extends JPanel {
         cordinateList.addCordinate(P3Point);
         g1.drawString(P3Point.getCordinateName(), P3Point.getScreenCordinates().x,P3Point.getScreenCordinates().y);  
         
-        dtCalculator = new CordinateDetailCalculator(this.CF,czPoint,t4Point,fPzPoint,t3Point,ozPoint);
+        
+        dtCalculator = new CordinateDetailCalculator(this.CF,czPoint,t4Point,fPzPoint,t3Point,ozPoint,aLenInnerCircle,bLenInnerCircle);
     }
     
     public QuadCurve2D.Double getCurveLine(CordinatePoints firstPoint, CordinatePoints middlePoint , CordinatePoints endPoint ){
@@ -373,16 +374,16 @@ public class DiagramPanel extends JPanel {
         x' = x + d / sqrt(1 + b²x² / (a²(a²-x²)))
         y' = b sqrt(1 - x'²/a²)
         */
-        System.out.println("RefPoints "+ refPoint.getCartesianCordinates());
+     //   System.out.println("RefPoints "+ refPoint.getCartesianCordinates());
         
-        System.out.println("Math.pow(aLen, 2) "+ Math.pow(aLen, 2));
-        System.out.println(" Math.pow((double)refX, 2)) "+  Math.pow((double)refX, 2));
+      //  System.out.println("Math.pow(aLen, 2) "+ Math.pow(aLen, 2));
+      //  System.out.println(" Math.pow((double)refX, 2)) "+  Math.pow((double)refX, 2));
         
         
         double dZ = Math.pow(aLen, 2) *((Math.pow(aLen, 2) - Math.pow((double)refX, 2)));
         double kZ = 1D + ((Math.pow(bLen, 2) * Math.pow((double)refX, 2)));
         
-        System.out.println("DZ "+dZ+" kz" +kZ + "distance"+distance);
+      //  System.out.println("DZ "+dZ+" kz" +kZ + "distance"+distance);
         double calculatedX = (double)refX + (distance / Math.sqrt((kZ/dZ)));
         double calculatedY = bLen * Math.sqrt((1 - Math.pow(calculatedX, 2) / Math.pow(aLen, 2)));
         

@@ -39,10 +39,10 @@ public class ScullModelElliptical {
         
         topLeftCornerCartesian.setCartesianCordinates(x, y);
         
-        System.out.println("Center "+ this.cartesianCenter.getCartesianCordinates());
-        System.out.println("Top Left "+ this.topLeftCornerCartesian.getCartesianCordinates());
-        System.out.println("Width "+ this.width);
-        System.out.println("Height "+ this.height);
+       // System.out.println("Center "+ this.cartesianCenter.getCartesianCordinates());
+       // System.out.println("Top Left "+ this.topLeftCornerCartesian.getCartesianCordinates());
+       // System.out.println("Width "+ this.width);
+       // System.out.println("Height "+ this.height);
     }
     
     public Ellipse2D getEllipse(){
