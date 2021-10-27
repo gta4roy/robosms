@@ -5,6 +5,7 @@
  */
 package com.robo.sms.model;
 
+import com.robo.sms.ui.mainUI;
 import java.awt.geom.Ellipse2D;
 
 /**
@@ -17,6 +18,7 @@ public class ScullModelElliptical {
     private double curcumference;    
     private CordinatePoints cartesianCenter = new CordinatePoints(0,0);
     private CordinatePoints topLeftCornerCartesian = new CordinatePoints(0,0);
+    //static double conversionFactor = 512D;
     static double conversionFactor = 512D;
     /*
     Factor

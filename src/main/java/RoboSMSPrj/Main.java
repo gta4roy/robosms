@@ -38,8 +38,7 @@ public class Main {
         }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ScullModelElliptical model = new ScullModelElliptical(new CordinatePoints(0,0),36D,38D);
-                mainUI ui = new mainUI(model);
+                mainUI ui = new mainUI();
                 ui.setVisible(true);
             }
         });

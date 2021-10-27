@@ -5,6 +5,7 @@
  */
 package com.robo.sms.model;
 
+import com.robo.sms.ui.mainUI;
 import java.awt.Point;
 
 /**
@@ -73,7 +74,10 @@ public class CordinatePoints {
     private Point screenCordinates = new Point(0,0);
     private Point cartesianCordinates = new Point(0,0);
     
-    private final int widthOfTheScreen = 720;
-    private final int heightOfTheScreen = 720;
+    private final int widthOfTheScreen = 600;
+    private final int heightOfTheScreen = 600;
+    
+   // private final int widthOfTheScreen = mainUI.widthOfDiagramPanel;
+    //private final int heightOfTheScreen = mainUI.heightOfDiagramPanel;
     
 }

@@ -31,7 +31,6 @@ public class DiagramPanel extends JPanel {
     
     public DiagramPanel(ScullModelElliptical model){    
         
-        this.setSize(1024, 1024);
         this.model = model;
         this.setToolTipText("");
         this.cordinateList = new CordinateListController();

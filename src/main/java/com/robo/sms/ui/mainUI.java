@@ -5,8 +5,13 @@
  */
 package com.robo.sms.ui;
 
+import com.robo.sms.model.CordinatePoints;
 import com.robo.sms.model.ScullModelElliptical;
-
+import java.awt.BorderLayout;
+import java.awt.Toolkit;
+import java.awt.Dimension;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 /**
  *
  * @author Anushree_Bose
@@ -16,14 +21,61 @@ public class mainUI extends javax.swing.JFrame {
     /**
      * Creates new form mainUI
      */
-    public mainUI(ScullModelElliptical model) {
+    
+    public static int widthOfDiagramPanel  =0;
+    public static int heightOfDiagramPanel  =0;
+    
+    public mainUI() {
+        
+        Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setBackground(new java.awt.Color(255, 255, 255)); //FORM Color
+        int width = (int)size.getWidth();
+        int height = (int)size.getHeight();
+        
+        diagramPanelDimension = new Dimension();
+        tablePanelDimension = new Dimension();
+        buttonPanelDimension = new Dimension();
+        
+        
+        width -= (int)((double)width * 0.30d);
+        this.setTitle("Scull Measurement System");
+        this.setSize(width   , height);
+        
+        diagramPanelDimension.setSize((int)(width * 0.70d),(int)(height *0.80d));
+        tablePanelDimension.setSize((int)(width * 0.30d),(int)(height *0.80d));
+        buttonPanelDimension.setSize((int)(width),(int)(height *0.09d));
+        
+        mainUI.widthOfDiagramPanel = (int)diagramPanelDimension.getWidth();
+        mainUI.heightOfDiagramPanel = (int)diagramPanelDimension.getHeight();
+        
+        System.out.println("Width of diagram panel "+ mainUI.widthOfDiagramPanel);
+        System.out.println("Height of the diagram Panel"+ mainUI.heightOfDiagramPanel);
+       
         
         initComponents();
-        this.setTitle("Scull Measurement System");
-        this.setSize(1024, 1024);
-        DiagramPanel panel = new DiagramPanel(model);
-        this.add(panel);
-        panel.setVisible(true);
+        
+        widthLength.setPreferredSize(heightLength.getSize());
+        heightLength.setText("");
+        widthLength.setText("");
+        this.jButton1.setText("Calculate");
+        
+        
+        jButton1.addActionListener(new ActionListener(){ 
+            public void actionPerformed(ActionEvent e) { 
+               
+                Double height = Double.parseDouble(heightLength.getText());
+                Double width = Double.parseDouble(widthLength.getText());
+                
+                ScullModelElliptical model = new ScullModelElliptical(new CordinatePoints(0,0),height,width);
+                DiagramPanel panel = new DiagramPanel(model);
+                panel.setSize(diagramPanelDimension);
+                diagramPanel.add(panel);
+                panel.setVisible(true);
+                panel.validate();
+            } 
+         } );
+              
+      
         
     }
 
@@ -36,24 +88,148 @@ public class mainUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        diagramPanel = new javax.swing.JPanel();
+        tablePanel = new javax.swing.JPanel();
+        buttonPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        heightLength = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        widthLength = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
+
+        diagramPanel.setBackground(new java.awt.Color(255, 255, 255));
+        diagramPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        diagramPanel.setMaximumSize(diagramPanelDimension);
+        diagramPanel.setMinimumSize(diagramPanelDimension);
+        diagramPanel.setPreferredSize(diagramPanelDimension);
+
+        javax.swing.GroupLayout diagramPanelLayout = new javax.swing.GroupLayout(diagramPanel);
+        diagramPanel.setLayout(diagramPanelLayout);
+        diagramPanelLayout.setHorizontalGroup(
+            diagramPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 266, Short.MAX_VALUE)
+        );
+        diagramPanelLayout.setVerticalGroup(
+            diagramPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        tablePanel.setBackground(new java.awt.Color(255, 204, 204));
+        tablePanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        tablePanel.setMaximumSize(tablePanelDimension);
+        tablePanel.setMinimumSize(tablePanelDimension);
+        tablePanel.setPreferredSize(tablePanelDimension);
+
+        javax.swing.GroupLayout tablePanelLayout = new javax.swing.GroupLayout(tablePanel);
+        tablePanel.setLayout(tablePanelLayout);
+        tablePanelLayout.setHorizontalGroup(
+            tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 209, Short.MAX_VALUE)
+        );
+        tablePanelLayout.setVerticalGroup(
+            tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 328, Short.MAX_VALUE)
+        );
+
+        buttonPanel.setMaximumSize(buttonPanelDimension);
+        buttonPanel.setMinimumSize(buttonPanelDimension);
+        buttonPanel.setPreferredSize(buttonPanelDimension);
+
+        jLabel1.setText("Scull Measurement System");
+
+        jLabel2.setText("Nashion To Inion Length (cm)");
+
+        heightLength.setText("jTextField1");
+
+        jLabel3.setText("Tragus Length (cm)");
+
+        widthLength.setText("jTextField2");
+
+        jButton1.setText("jButton1");
+
+        javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
+        buttonPanel.setLayout(buttonPanelLayout);
+        buttonPanelLayout.setHorizontalGroup(
+            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(buttonPanelLayout.createSequentialGroup()
+                .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(buttonPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(heightLength, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(widthLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        buttonPanelLayout.setVerticalGroup(
+            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(buttonPanelLayout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel2)
+                        .addComponent(heightLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3))
+                    .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(widthLength)
+                        .addComponent(jButton1)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(buttonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(diagramPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(diagramPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
  
-
+    public int test= 45;
+    private Dimension diagramPanelDimension;
+    private Dimension tablePanelDimension;
+    private Dimension buttonPanelDimension;
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel buttonPanel;
+    private javax.swing.JPanel diagramPanel;
+    private javax.swing.JTextField heightLength;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel tablePanel;
+    private javax.swing.JTextField widthLength;
     // End of variables declaration//GEN-END:variables
 }
