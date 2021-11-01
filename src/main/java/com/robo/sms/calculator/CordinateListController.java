@@ -43,5 +43,13 @@ public class CordinateListController {
         }
         return null;
     }
+    
+    public void cleanAllPoints(){
+        this.listOfCordinates.clear();
+    }
+    
+    public List<CordinatePoints> getAllCordinates(){
+        return this.listOfCordinates;
+    }
     private List<CordinatePoints> listOfCordinates = new ArrayList<CordinatePoints>();
 }

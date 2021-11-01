@@ -40,6 +40,7 @@ public class mainUI extends javax.swing.JFrame {
         width -= (int)((double)width * 0.30d);
         this.setTitle("Scull Measurement System");
         this.setSize(width   , height);
+        this.setResizable(false);
         
         diagramPanelDimension.setSize((int)(width * 0.70d),(int)(height *0.80d));
         tablePanelDimension.setSize((int)(width * 0.30d),(int)(height *0.80d));
@@ -51,6 +52,7 @@ public class mainUI extends javax.swing.JFrame {
         System.out.println("Width of diagram panel "+ mainUI.widthOfDiagramPanel);
         System.out.println("Height of the diagram Panel"+ mainUI.heightOfDiagramPanel);
        
+       
         
         initComponents();
         
@@ -58,25 +60,27 @@ public class mainUI extends javax.swing.JFrame {
         heightLength.setText("");
         widthLength.setText("");
         this.jButton1.setText("Calculate");
-        
+            
+        panel.setSize(diagramPanelDimension);
+        diagramPanel.add(panel);
+        panel.setVisible(true);
+        jScrollPane1.setPreferredSize(tablePanelDimension);
         
         jButton1.addActionListener(new ActionListener(){ 
             public void actionPerformed(ActionEvent e) { 
-               
+                         
                 Double height = Double.parseDouble(heightLength.getText());
                 Double width = Double.parseDouble(widthLength.getText());
                 
                 ScullModelElliptical model = new ScullModelElliptical(new CordinatePoints(0,0),height,width);
-                DiagramPanel panel = new DiagramPanel(model);
-                panel.setSize(diagramPanelDimension);
-                diagramPanel.add(panel);
-                panel.setVisible(true);
-                panel.validate();
+                panel.updateModel(model);
+                jTable1.setModel(panel.getTableController().getCordinateTable().getModel());
+             
+                revalidate();
+                repaint();
             } 
          } );
-              
-      
-        
+                  
     }
 
     /**
@@ -90,6 +94,8 @@ public class mainUI extends javax.swing.JFrame {
 
         diagramPanel = new javax.swing.JPanel();
         tablePanel = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
         buttonPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -101,7 +107,6 @@ public class mainUI extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
 
-        diagramPanel.setBackground(new java.awt.Color(255, 255, 255));
         diagramPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         diagramPanel.setMaximumSize(diagramPanelDimension);
         diagramPanel.setMinimumSize(diagramPanelDimension);
@@ -111,28 +116,55 @@ public class mainUI extends javax.swing.JFrame {
         diagramPanel.setLayout(diagramPanelLayout);
         diagramPanelLayout.setHorizontalGroup(
             diagramPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 266, Short.MAX_VALUE)
+            .addGap(0, 10, Short.MAX_VALUE)
         );
         diagramPanelLayout.setVerticalGroup(
             diagramPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        tablePanel.setBackground(new java.awt.Color(255, 204, 204));
         tablePanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         tablePanel.setMaximumSize(tablePanelDimension);
         tablePanel.setMinimumSize(tablePanelDimension);
         tablePanel.setPreferredSize(tablePanelDimension);
 
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Point Desc", "Distance from CZ", "Arc Length", "Arc Point"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable1.setRowHeight(24);
+        jScrollPane1.setViewportView(jTable1);
+
         javax.swing.GroupLayout tablePanelLayout = new javax.swing.GroupLayout(tablePanel);
         tablePanel.setLayout(tablePanelLayout);
         tablePanelLayout.setHorizontalGroup(
             tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 209, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tablePanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 445, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         tablePanelLayout.setVerticalGroup(
             tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 328, Short.MAX_VALUE)
+            .addGroup(tablePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(4, Short.MAX_VALUE))
         );
 
         buttonPanel.setMaximumSize(buttonPanelDimension);
@@ -197,7 +229,7 @@ public class mainUI extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(diagramPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)))
+                        .addComponent(tablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -207,7 +239,7 @@ public class mainUI extends javax.swing.JFrame {
                 .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(tablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
                     .addComponent(diagramPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -216,10 +248,11 @@ public class mainUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
  
-    public int test= 45;
     private Dimension diagramPanelDimension;
     private Dimension tablePanelDimension;
     private Dimension buttonPanelDimension;
+    
+    private DiagramPanel panel = new DiagramPanel();
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonPanel;
@@ -229,6 +262,8 @@ public class mainUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JPanel tablePanel;
     private javax.swing.JTextField widthLength;
     // End of variables declaration//GEN-END:variables

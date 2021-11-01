@@ -60,13 +60,47 @@ public class CordinateDetailCalculator {
         this.arcLength = getArchLengthBetweenPointsOnTheCurve(refPoint) * this.CF;
     }
     
+    
+    public Double getDistanceFromCz(){
+        return this.distanceInCM;
+    } 
+    
+    public Double getArcLength(){
+        return this.arcLength;
+    }
+    
+    public String getDescription(){
+        return this.refPoint.getCordinateName();
+    }
+    
+    public String getRefrencePoint(){
+        
+        String referencePoint = "CZ";
+        if(refPoint.getCartesianCordinates().x >0 && refPoint.getCartesianCordinates().y >= 0){
+            //First Quadrant
+            referencePoint = "T4";
+        }else if (refPoint.getCartesianCordinates().x <= 0 && refPoint.getCartesianCordinates().y > 0){
+            //second quadrant
+            referencePoint = "T3";
+           
+        }else if (refPoint.getCartesianCordinates().x < 0 && refPoint.getCartesianCordinates().y <= 0){
+            //third quadrant
+            referencePoint = "T3";
+            
+        }else if (refPoint.getCartesianCordinates().x >= 0 && refPoint.getCartesianCordinates().y < 0){
+            //fourth quadrant
+            referencePoint = "T4";
+        }
+        return referencePoint;
+    }
+    
     public String getDetails(){
         StringBuilder details = new StringBuilder();    
         details.append(refPoint.getCordinateName()+" ");
         details.append(String.format("%.2f",this.distanceInCM)+"cm. ");
-        details.append(String.format("%.2f",this.angleFromXPositiveAxis)+ " degree rot ");
-        details.append(String.format("%.2f",this.arcLength)+ "  Arc Length from X Axis ");
-        details.append(" Cordinate "+ String.format(" X :%d  Y: %d",this.refPoint.getCartesianCordinates().x , this.refPoint.getCartesianCordinates().y));
+        //details.append(String.format("%.2f",this.angleFromXPositiveAxis)+ " degree rot ");
+        details.append(String.format("%.2f",this.arcLength)+ "cm  Arc Length from X Axis ");
+       // details.append(" Cordinate "+ String.format(" X :%d  Y: %d",this.refPoint.getCartesianCordinates().x , this.refPoint.getCartesianCordinates().y));
         return details.toString();
     }
     

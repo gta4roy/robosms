@@ -10,6 +10,7 @@ import com.robo.sms.calculator.CordinateListController;
 import com.robo.sms.model.CordinatePoints;
 import com.robo.sms.model.ScullModelElliptical;
 import com.robo.sms.model.ScullPointReference;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -29,9 +30,9 @@ import javax.swing.JPanel;
  */
 public class DiagramPanel extends JPanel {
     
-    public DiagramPanel(ScullModelElliptical model){    
+    public DiagramPanel(){    
         
-        this.model = model;
+        this.model = null;
         this.setToolTipText("");
         this.cordinateList = new CordinateListController();
         this.innerCircleCordinateMaps =new HashMap<Double,String>();
@@ -43,6 +44,16 @@ public class DiagramPanel extends JPanel {
         innerCircleCordinateMaps.put(252.0D, ScullPointReference.O1_POINT);
         innerCircleCordinateMaps.put(288.0D, ScullPointReference.O2_POINT);
         innerCircleCordinateMaps.put(324.0D, ScullPointReference.T6_POINT);
+    }
+    
+    
+    public void updateModel(ScullModelElliptical model){
+        
+        this.removeAll();
+        this.model = model;
+        this.populateAllPoints();
+        this.revalidate();
+        this.repaint();
     }
     
      // paint the applet
@@ -148,11 +159,15 @@ public class DiagramPanel extends JPanel {
             return "";
         }
     } 
-
-    @Override
-    public void paintComponent(Graphics g)
-    {
-      
+    
+    
+    public void populateAllPoints(){
+        if (this.model == null){
+            System.out.println("Model Not Defined ");
+            return;
+        }
+        
+        cordinateList.cleanAllPoints();
         this.CF =  this.model.getNashionToInion() / conversionFactor;
         Ellipse2D ed = this.model.getEllipse();
             
@@ -172,62 +187,32 @@ public class DiagramPanel extends JPanel {
         cordinateList.addCordinate(leftTragusPoint);
         cordinateList.addCordinate(rightTragusPoint);
         
-        
-        Graphics2D g1 = (Graphics2D)g;
-  
-        g1.setColor(Color.RED);
-  
-        // draw the first ellipse
-        g1.draw(ed);
-  
-        g1.setColor(Color.blue);
-        
-        g1.drawLine(nasionPoint.getScreenCordinates().x, nasionPoint.getScreenCordinates().y, inionPoint.getScreenCordinates().x, inionPoint.getScreenCordinates().y);
-        g1.drawLine(leftTragusPoint.getScreenCordinates().x,leftTragusPoint.getScreenCordinates().y, rightTragusPoint.getScreenCordinates().x, rightTragusPoint.getScreenCordinates().y);
-                  
-        //draw labels 
-        g1.drawString(nasionPoint.getCordinateName(),nasionPoint.getScreenCordinates().x, nasionPoint.getScreenCordinates().y);
-        g1.drawString(inionPoint.getCordinateName(), inionPoint.getScreenCordinates().x, inionPoint.getScreenCordinates().y);
-        g1.drawString(czPoint.getCordinateName(), czPoint.getScreenCordinates().x, czPoint.getScreenCordinates().y);
-        
-        
-        g1.drawString(leftTragusPoint.getCordinateName(), leftTragusPoint.getScreenCordinates().x,leftTragusPoint.getScreenCordinates().y);        
-        g1.drawString(rightTragusPoint.getCordinateName(), rightTragusPoint.getScreenCordinates().x,rightTragusPoint.getScreenCordinates().y);  
-        
-       
         //Step 2
         
         //FPz
         double tenPrtGap = 0.10 * this.model.getHeight(); //10 % of the height
         CordinatePoints fPzPoint = getFPzPoint(tenPrtGap, nasionPoint);
         cordinateList.addCordinate(fPzPoint);
-        g1.drawString(fPzPoint.getCordinateName(), fPzPoint.getScreenCordinates().x,fPzPoint.getScreenCordinates().y);
-        
+      
         //Oz
         CordinatePoints ozPoint =getOzPoint(tenPrtGap,inionPoint);
         cordinateList.addCordinate(ozPoint);
-        g1.drawString(ozPoint.getCordinateName(), ozPoint.getScreenCordinates().x,ozPoint.getScreenCordinates().y); 
     
         //Step 4 
         double twentyPrtGap = 0.20 * this.model.getHeight() ; //20 % of the length
         CordinatePoints fzPoint = getFzPoint(twentyPrtGap, czPoint);
         cordinateList.addCordinate(fzPoint);   
-        g1.drawString(fzPoint.getCordinateName(), fzPoint.getScreenCordinates().x,fzPoint.getScreenCordinates().y); 
         
         CordinatePoints PzPoint = getPzPoint(twentyPrtGap, czPoint);
         cordinateList.addCordinate(PzPoint);
-        g1.drawString(PzPoint.getCordinateName(), PzPoint.getScreenCordinates().x,PzPoint.getScreenCordinates().y); 
       
         //Step 7
         double leftGap =0.10 * model.getWidth();
         CordinatePoints t3Point = getT3Point(leftGap, leftTragusPoint);
         cordinateList.addCordinate(t3Point);
-        g1.drawString(t3Point.getCordinateName(), t3Point.getScreenCordinates().x,t3Point.getScreenCordinates().y); 
-        
-        
+                
         CordinatePoints t4Point = getT4Point(leftGap, rightTragusPoint);
         cordinateList.addCordinate(t4Point);
-        g1.drawString(t4Point.getCordinateName(), t4Point.getScreenCordinates().x,t4Point.getScreenCordinates().y); 
         
         //Step 9
         double c3Gap = 0.50D * getDistancePixels(t3Point,czPoint);
@@ -238,10 +223,7 @@ public class DiagramPanel extends JPanel {
         cordinateList.addCordinate(c3Point);
         cordinateList.addCordinate(c4Point);
         
-     
-        g1.drawString(c3Point.getCordinateName(), c3Point.getScreenCordinates().x,c3Point.getScreenCordinates().y); 
-        g1.drawString(c4Point.getCordinateName(), c4Point.getScreenCordinates().x,c4Point.getScreenCordinates().y); 
-        
+             
         double circum = model.getCircumferenceOfSkullEllipse();
       //  System.out.println("Complete Circulference "+ circum + "px ");
         
@@ -268,7 +250,6 @@ public class DiagramPanel extends JPanel {
               if (innerCircleCordinateMaps.getOrDefault(angle, "NA") !="NA"){
                     pointOnInnerCircle.setCordinateName(innerCircleCordinateMaps.getOrDefault(angle,"NA"));     
                     cordinateList.addCordinate(pointOnInnerCircle);
-                    g1.drawString(pointOnInnerCircle.getCordinateName(), pointOnInnerCircle.getScreenCordinates().x,pointOnInnerCircle.getScreenCordinates().y);    
               }  
         } 
         
@@ -288,15 +269,12 @@ public class DiagramPanel extends JPanel {
         
         CordinatePoints F4Point = new CordinatePoints((int)xF4,(int)yF4,ScullPointReference.F4_POINT);
         cordinateList.addCordinate(F4Point);
-        g1.drawString(F4Point.getCordinateName(), F4Point.getScreenCordinates().x,F4Point.getScreenCordinates().y);    
         
         double yF3 =  yF4;
         double xF3 = -xF4;
         
         CordinatePoints F3Point = new CordinatePoints((int)xF3,(int)yF3,ScullPointReference.F3_POINT);
         cordinateList.addCordinate(F3Point);
-        g1.drawString(F3Point.getCordinateName(), F3Point.getScreenCordinates().x,F3Point.getScreenCordinates().y);  
-
         
         QuadCurve2D.Double secondHalfCurve = getCurveLine(
                 cordinateList.getCordinatePointByName(ScullPointReference.T5_POINT),
@@ -314,17 +292,82 @@ public class DiagramPanel extends JPanel {
         
         CordinatePoints P4Point = new CordinatePoints((int)xP4,(int)yP4,ScullPointReference.P4_POINT);
         cordinateList.addCordinate(P4Point);
-        g1.drawString(P4Point.getCordinateName(), P4Point.getScreenCordinates().x,P4Point.getScreenCordinates().y); 
         
         double yP3 =  yP4;
         double xP3 = -xP4;
         
         CordinatePoints P3Point = new CordinatePoints((int)xP3,(int)yP3,ScullPointReference.P3_POINT);
         cordinateList.addCordinate(P3Point);
-        g1.drawString(P3Point.getCordinateName(), P3Point.getScreenCordinates().x,P3Point.getScreenCordinates().y);  
-        
-        
+                
+       
         dtCalculator = new CordinateDetailCalculator(this.CF,czPoint,t4Point,fPzPoint,t3Point,ozPoint,aLenInnerCircle,bLenInnerCircle);
+        this.tableController = new CordinateTableController(dtCalculator ,cordinateList );
+        tableController.populateTable(); 
+    }
+    
+    
+    private Ellipse2D getInnerEllipse(){
+        
+         CordinatePoints czPoint = this.model.getCartesianCenter();
+         int y = this.cordinateList.getCordinatePointByName(ScullPointReference.Fpz_POINT).getScreenCordinates().y;
+         int x = this.cordinateList.getCordinatePointByName(ScullPointReference.T3_POINT).getScreenCordinates().x;
+         
+         CordinatePoints fpzPoint = cordinateList.getCordinatePointByName(ScullPointReference.Fpz_POINT);
+         CordinatePoints ozPoint = cordinateList.getCordinatePointByName(ScullPointReference.OZ_POINT);
+         double height = getDistancePixels(fpzPoint,ozPoint);
+         
+         CordinatePoints t3Point = cordinateList.getCordinatePointByName(ScullPointReference.T3_POINT);
+         CordinatePoints t4Point = cordinateList.getCordinatePointByName(ScullPointReference.T4_POINT);
+         double width = getDistancePixels(t3Point, t4Point);
+         
+         Ellipse2D ed = new Ellipse2D.Double(x,
+                 y ,width,height);
+          
+         return ed;
+         
+    }
+
+    @Override
+    public void paintComponent(Graphics g)
+    {
+        if (this.model == null){
+            return;
+        }
+        Graphics2D g1 = (Graphics2D)g;
+        g1.setColor(Color.RED);
+        // draw the first ellipse
+        Ellipse2D ed = this.model.getEllipse();
+        g1.draw(ed);
+        
+        Ellipse2D innerEllipse = getInnerEllipse();
+        
+        float[] dash1 = { 2f, 0f, 2f };
+        BasicStroke bs1 = new BasicStroke(1, 
+                                    BasicStroke.CAP_BUTT, 
+                                    BasicStroke.JOIN_ROUND, 
+                                    1.0f, 
+                                    dash1,
+                                    2f);
+        g1.setStroke(bs1);
+        
+        g1.draw(innerEllipse);
+        
+  
+        g1.setColor(Color.blue);
+        
+        CordinatePoints nasionPoint = cordinateList.getCordinatePointByName(ScullPointReference.NZ_POINT);
+        CordinatePoints inionPoint = cordinateList.getCordinatePointByName(ScullPointReference.IZ_POINT);
+        
+        CordinatePoints leftTragusPoint = cordinateList.getCordinatePointByName(ScullPointReference.T1_POINT);
+        CordinatePoints rightTragusPoint = cordinateList.getCordinatePointByName(ScullPointReference.T2_POINT);
+            
+        g1.drawLine(nasionPoint.getScreenCordinates().x, nasionPoint.getScreenCordinates().y, inionPoint.getScreenCordinates().x, inionPoint.getScreenCordinates().y);
+        g1.drawLine(leftTragusPoint.getScreenCordinates().x,leftTragusPoint.getScreenCordinates().y, rightTragusPoint.getScreenCordinates().x, rightTragusPoint.getScreenCordinates().y); 
+       
+        for (CordinatePoints cordinateRef : cordinateList.getAllCordinates()){
+              g1.drawString(cordinateRef.getCordinateName(), cordinateRef.getScreenCordinates().x,cordinateRef.getScreenCordinates().y);        
+        }
+        
     }
     
     public QuadCurve2D.Double getCurveLine(CordinatePoints firstPoint, CordinatePoints middlePoint , CordinatePoints endPoint ){
@@ -393,8 +436,13 @@ public class DiagramPanel extends JPanel {
         return calculatedPoint;
     }
     
+    public CordinateTableController getTableController(){
+        return tableController;
+    }
+    
     CordinateDetailCalculator  dtCalculator = null;
     CordinateListController    cordinateList = null;
+    CordinateTableController   tableController = null;
     
     private Map<Double,String> innerCircleCordinateMaps;
     ScullModelElliptical model =null;
