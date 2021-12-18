@@ -78,18 +78,41 @@ public class CordinateDetailCalculator {
         String referencePoint = "CZ";
         if(refPoint.getCartesianCordinates().x >0 && refPoint.getCartesianCordinates().y >= 0){
             //First Quadrant
-            referencePoint = "T4";
+         
+             //Major and Minor Axis is shifting 
+           if (this.aLen < this.bLen){
+            //reference point
+                referencePoint = "Fpz";
+            }else {
+                referencePoint = "T4";
+           }
+            
         }else if (refPoint.getCartesianCordinates().x <= 0 && refPoint.getCartesianCordinates().y > 0){
-            //second quadrant
-            referencePoint = "T3";
+            //second quadrant        
+            if (this.aLen < this.bLen){
+            //reference point
+                referencePoint = "Fpz";
+            }else {
+                referencePoint = "T3";
+           }
            
         }else if (refPoint.getCartesianCordinates().x < 0 && refPoint.getCartesianCordinates().y <= 0){
             //third quadrant
-            referencePoint = "T3";
+            if (this.aLen < this.bLen){
+            //reference point
+                referencePoint = "Oz";
+            }else {
+                referencePoint = "T3";
+           }
             
         }else if (refPoint.getCartesianCordinates().x >= 0 && refPoint.getCartesianCordinates().y < 0){
             //fourth quadrant
-            referencePoint = "T4";
+           if (this.aLen < this.bLen){
+            //reference point
+                referencePoint = "Oz";
+           }else {
+                referencePoint = "T4";
+            }
         }
         return referencePoint;
     }
@@ -99,7 +122,14 @@ public class CordinateDetailCalculator {
         details.append(refPoint.getCordinateName()+" ");
         details.append(String.format("%.2f",this.distanceInCM)+"cm. ");
         //details.append(String.format("%.2f",this.angleFromXPositiveAxis)+ " degree rot ");
-        details.append(String.format("%.2f",this.arcLength)+ "cm  Arc Length from X Axis ");
+        
+        if (this.aLen < this.bLen){
+            //reference point
+            details.append(String.format("%.2f",this.arcLength)+ "cm  Arc Length from Y Axis ");
+        }else {
+            details.append(String.format("%.2f",this.arcLength)+ "cm  Arc Length from X Axis ");
+        }
+      
        // details.append(" Cordinate "+ String.format(" X :%d  Y: %d",this.refPoint.getCartesianCordinates().x , this.refPoint.getCartesianCordinates().y));
         return details.toString();
     }
@@ -150,8 +180,20 @@ public class CordinateDetailCalculator {
         System.out.println("---ALEN : "+ this.aLen + "  BLen "+this.bLen);
         System.out.println("---ALEN : "+ this.aLen *this.CF + "  BLen "+this.bLen *this.CF);
              
-        double aLen  = this.aLen;
-        double bLen = this.bLen;
+        //Major axis aLen 
+        //Minon axis blen 
+        double aLen = 0.0; 
+        double bLen = 0.0;
+        
+        if (this.aLen < this.bLen){
+            aLen  = this.bLen;
+            bLen = this.aLen;
+            angle = Math.toRadians(90.0) - angle;
+        } else {
+            aLen = this.aLen;
+            bLen = this.bLen;
+        }
+ 
         System.out.println("   Angle in Degree :"+ Math.toDegrees(angle));
         System.out.println("   Angle in Radian :"+ angle);
         

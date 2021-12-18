@@ -149,6 +149,7 @@
                     <Column editable="false" title="Arc Point" type="java.lang.Object"/>
                   </Table>
                 </Property>
+                <Property name="enabled" type="boolean" value="false"/>
                 <Property name="rowHeight" type="int" value="24"/>
               </Properties>
             </Component>

@@ -147,6 +147,7 @@ public class mainUI extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        jTable1.setEnabled(false);
         jTable1.setRowHeight(24);
         jScrollPane1.setViewportView(jTable1);
 
